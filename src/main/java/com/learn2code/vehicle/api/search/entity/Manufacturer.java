@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name="manufacturer")
 @Data
@@ -23,5 +25,6 @@ public class Manufacturer {
 
     @Column(name="country_of_origin")
     private String countryOfOrigin;
+
 
 }
