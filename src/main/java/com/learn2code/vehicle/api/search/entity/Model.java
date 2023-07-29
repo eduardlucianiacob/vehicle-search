@@ -1,5 +1,6 @@
 package com.learn2code.vehicle.api.search.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,13 +22,13 @@ public class Model {
     @Column(name="model_name")
     private String modelName;
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name="model_trim",
             joinColumns = @JoinColumn(name="model_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name="trim_id", referencedColumnName = "id")
     )
     private List<TrimType> trimTypeList;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch=FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch=FetchType.EAGER)
     private Manufacturer manufacturer;
 }
