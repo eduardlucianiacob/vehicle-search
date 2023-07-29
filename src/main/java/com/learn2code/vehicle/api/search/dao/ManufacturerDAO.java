@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ManufacturerDAO extends JpaRepository<Manufacturer, Integer> {
 
+    Manufacturer findByManufacturerName(String name);
 }
