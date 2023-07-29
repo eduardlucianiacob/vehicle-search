@@ -9,6 +9,7 @@ import com.learn2code.vehicle.api.search.exception.TrimTypeNotFoundException;
 import com.learn2code.vehicle.api.search.service.ModelTrimService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ModelTrimServiceImpl implements ModelTrimService {
 
     @Autowired
@@ -86,6 +88,27 @@ public class ModelTrimServiceImpl implements ModelTrimService {
         }
         return trimTypeOptional.get();
 
+    }
+
+    @Override
+    public void deleteModelById(int id) throws ModelNotFoundException {
+        Model dbModel = getModelById(id);
+        try {
+            modelDAO.deleteById(id);
+        } catch(Exception ex){
+            System.out.println("*******Unable to delete model. Check DB Connection*******"+ ex.getMessage());
+        }
+
+    }
+
+    @Override
+    public void deleteTrimType(int id) throws TrimTypeNotFoundException {
+        TrimType dbTrim = getTrimTypeById(id);
+        try{
+            trimTypeDAO.deleteById(id);
+        } catch (Exception ex){
+            System.out.println("*******Unable to delete trim type. Check DB Connection*******"+ ex.getMessage());
+        }
     }
 
 }
