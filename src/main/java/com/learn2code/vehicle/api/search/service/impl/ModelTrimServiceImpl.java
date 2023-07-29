@@ -1,9 +1,12 @@
 package com.learn2code.vehicle.api.search.service.impl;
 
+import com.learn2code.vehicle.api.search.dao.ManufacturerDAO;
 import com.learn2code.vehicle.api.search.dao.ModelDAO;
 import com.learn2code.vehicle.api.search.dao.TrimTypeDAO;
+import com.learn2code.vehicle.api.search.entity.Manufacturer;
 import com.learn2code.vehicle.api.search.entity.Model;
 import com.learn2code.vehicle.api.search.entity.TrimType;
+import com.learn2code.vehicle.api.search.exception.ManufacturerNotFoundException;
 import com.learn2code.vehicle.api.search.exception.ModelNotFoundException;
 import com.learn2code.vehicle.api.search.exception.TrimTypeNotFoundException;
 import com.learn2code.vehicle.api.search.service.ModelTrimService;
@@ -25,6 +28,9 @@ public class ModelTrimServiceImpl implements ModelTrimService {
 
     @Autowired
     private TrimTypeDAO trimTypeDAO;
+
+    @Autowired
+    private ManufacturerDAO manufacturerDAO;
 
     @Override
     public Model saveModel(Model model) {
@@ -110,5 +116,31 @@ public class ModelTrimServiceImpl implements ModelTrimService {
             System.out.println("*******Unable to delete trim type. Check DB Connection*******"+ ex.getMessage());
         }
     }
+
+    @Override
+    public List<Model> getModelsByManufacturerId(int manufacturerId) throws ManufacturerNotFoundException {
+        Optional<Manufacturer> dbManufacturer = manufacturerDAO.findById(manufacturerId);
+
+        if(!dbManufacturer.isPresent()){
+            throw new ManufacturerNotFoundException("No manufacturer found for ID-"+manufacturerId);
+        }
+
+        List<Model> dbModels = modelDAO.findByManufacturer(dbManufacturer.get());
+        return dbModels;
+    }
+
+    @Override
+    public List<Model> getModelsByManufacturerName(String name) throws ManufacturerNotFoundException {
+        Manufacturer dbManufacturer = manufacturerDAO.findByManufacturerName(name);
+
+        if(dbManufacturer == null){
+            throw new ManufacturerNotFoundException("No manufacturer found for name-"+name);
+        }
+
+        int manufacturerId = dbManufacturer.getId();
+        List<Model> dbModels = modelDAO.fetchModelsBasedManufacturerId(manufacturerId);
+        return null;
+    }
+
 
 }
