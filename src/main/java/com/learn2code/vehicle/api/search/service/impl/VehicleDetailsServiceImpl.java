@@ -5,6 +5,7 @@ import com.learn2code.vehicle.api.search.dto.ClientVehicleDetail;
 import com.learn2code.vehicle.api.search.dto.VehicleDetail;
 import com.learn2code.vehicle.api.search.dto.VehicleDetailsDTO;
 import com.learn2code.vehicle.api.search.entity.VehicleMarketPrice;
+import com.learn2code.vehicle.api.search.exception.VehicleDetailsNotFound;
 import com.learn2code.vehicle.api.search.service.VehicleDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,17 @@ public class VehicleDetailsServiceImpl implements VehicleDetailService {
                 .collect(Collectors.toList());
 
         return clientVehicleDetailsList;
+    }
+
+    @Override
+    public VehicleDetail getVehicleById(int vehicleId) throws VehicleDetailsNotFound {
+        VehicleDetail dbVehicle = null;
+        try{
+            dbVehicle = restTemplate.getForObject("http://localhost:9192/api/v1/vehicle-details/"+vehicleId, VehicleDetail.class);
+        } catch (Exception e){
+            throw new VehicleDetailsNotFound("No vehicle details found in DB for ID-"+ vehicleId);
+        }
+        return dbVehicle;
     }
 
     private ClientVehicleDetail mapClientVehicleDetailFromVehicleDetail(VehicleDetail vehicleDetail){

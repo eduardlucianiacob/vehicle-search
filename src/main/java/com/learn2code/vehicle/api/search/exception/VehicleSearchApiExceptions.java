@@ -37,4 +37,11 @@ public class VehicleSearchApiExceptions {
         ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(VehicleDetailsNotFound.class)
+    public ResponseEntity<ErrorResponse> handleVehicleDetailNotFound(VehicleDetailsNotFound ex){
+        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
 }
