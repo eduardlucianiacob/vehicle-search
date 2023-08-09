@@ -13,7 +13,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,6 +56,20 @@ public class VehicleDetailsServiceImpl implements VehicleDetailService {
             throw new VehicleDetailsNotFound("No vehicle details found in DB for ID-"+ vehicleId);
         }
         return dbVehicle;
+    }
+
+    @Override
+    public List<ClientVehicleDetail> fetchVehicleDetailByCriteria(String modelYear, String brand, String model, String trim, String price) {
+        Map<String, String> params = new HashMap<>();
+        params.put("modelYear", modelYear);
+        params.put("brand", brand);
+        params.put("model", model);
+        params.put("trim", trim);
+        params.put("price", price);
+
+        String url = "http://localhost:9194/api/v1/vehicle-details/search?modelYear={modelYear}&brand={brand}&model={model}&trim={trim}&price={price}";
+        VehicleDetailsDTO filteredList = restTemplate.getForObject(url, VehicleDetailsDTO.class, params);
+        return filteredList.getVehicleDetailList().stream().map(vehicleDetail -> mapClientVehicleDetailFromVehicleDetail(vehicleDetail)).collect(Collectors.toList());
     }
 
     private ClientVehicleDetail mapClientVehicleDetailFromVehicleDetail(VehicleDetail vehicleDetail){
